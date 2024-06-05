@@ -98,25 +98,62 @@
         for (let i = 0; i < N * N; i++) {
             squares[i] = new Set();
         }
-        
+
+        function update_sets(i, j, value) {
+            rows[i].add(value);
+            cols[j].add(value);
+
+            let squareIndex = Math.floor(i / N) * N + Math.floor(j / N);
+            squares[squareIndex].add(value);
+        }
+
+        function remove_from_sets(i, j, value) {
+            rows[i].delete(value);
+            cols[j].delete(value);
+
+            let squareIndex = Math.floor(i / N) * N + Math.floor(j / N);
+            squares[squareIndex].delete(value);
+        }
+
         for (let i = 0; i < L; i++) {
             for (let j = 0; j < L; j++) {
                 let value = get_value(i, j);
                 if (value !== null) {
-                    rows[i].add(value);  // Add value to the row set
-                    cols[j].add(value);  // Add value to the column set
-
-                    // Calculate the square index for the sub-grid
-                    let squareIndex = Math.floor(i / N) * N + Math.floor(j / N);
-                    squares[squareIndex].add(value); // Add value to the corresponding square set
+                    update_sets(i, j, value);
                 }
             }
         }
 
-        console.log("Row Sets:", rows);
-        console.log("Column Sets:", cols);
-        console.log("Square Sets:", squares);
+        for (let i = 0; i < L; i++) {
+            for (let j = 0; j < L; j++) {
+                let inputElement = document.getElementById(`input-${i}-${j}`);
 
+                inputElement.addEventListener('input', function () {
+                    let newValue = parseInt(inputElement.value);
+
+                    // If the value is a number and not already in the set, update the sets
+                    if (!isNaN(newValue)) {
+                        // Remove the previous value if there's one
+                        let previousValue = get_value(i, j);
+                        if (previousValue !== null) {
+                            remove_from_sets(i, j, previousValue);
+                        }
+
+                        // Add the new value to the sets
+                        update_sets(i, j, newValue);
+                    } else {
+                        // If the input is empty, remove the value from the sets
+                        let previousValue = get_value(i, j);
+                        if (previousValue !== null) {
+                            remove_from_sets(i, j, previousValue);
+                        }
+                    }
+                    console.log("Row Sets:", rows);
+                    console.log("Column Sets:", cols);
+                    console.log("Square Sets:", squares);
+                });
+            }
+        }
 
     </script>
 </body>
