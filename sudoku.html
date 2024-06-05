@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <title>sudoku</title>
+</head>
+
+<body style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+
+    <div id="grid"> </div>
+
+    <script>
+        /*let matrix = [
+            [0, 0, 0, 3, 5, 0, 2, 0, 0],
+            [7, 0, 0, 0, 0, 4, 0, 0, 0],
+            [2, 5, 9, 0, 8, 7, 0, 0, 0],
+            [9, 0, 4, 0, 0, 0, 0, 2, 0],
+            [0, 6, 0, 0, 0, 0, 0, 8, 0],
+            [0, 2, 0, 0, 0, 0, 1, 0, 5],
+            [0, 0, 0, 7, 6, 0, 3, 5, 2],
+            [0, 0, 0, 8, 0, 0, 0, 0, 1],
+            [0, 0, 1, 0, 4, 2, 0, 0, 0],
+        ];*/
+
+        let matrix = [[1, 0, 3, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 4],
+        [0, 1, 0, 0]];
+
+        let L = matrix.length; // Total number of rows/columns.
+        let N = Math.sqrt(L);  // Size of each sub-grid (e.g., 3 for 9x9 Sudoku).
+
+        let tbl = create_table_from(matrix);
+        let grid = document.getElementById('grid');
+        grid.appendChild(tbl);
+
+        function create_table_from(matrix) {
+            let tbl = document.createElement('table');
+            tbl.style.borderCollapse = "collapse"; // Collapses cell borders.
+
+            for (let i = 0; i < matrix.length; i++) {
+                let tr = document.createElement('tr'); // Create a table row.
+
+                for (let j = 0; j < matrix[i].length; j++) {
+                    let td = document.createElement('td'); // Create a table cell.
+
+                    // Add bold borders for sub-grid boundaries.
+                    let border_square = "";
+                    if (i % N == 0) border_square += "border-top: 3px solid black;";
+                    if (i == L - 1) border_square += "border-bottom: 3px solid black;";
+                    if (j % N == 0) border_square += "border-left: 3px solid black;";
+                    if (j == L - 1) border_square += "border-right: 3px solid black;";
+
+                    td.style = `width: 40px; height: 40px; border: 1px solid black; ${border_square}`;
+
+                    // Create input elements inside cells.
+                    let input = document.createElement('input');
+                    input.id = `input-${i}-${j}`;
+                    input.type = 'text';
+                    input.style = "width: 100%; height: 100%; border: none; padding: 0; text-align: center; font-size: x-large;";
+
+                    if (matrix[i][j] !== 0) {
+                        input.readOnly = true; // Pre-filled cells are read-only.
+                        input.style.color = "green"; // Highlight pre-filled numbers in green.
+                        input.value = matrix[i][j];
+                    }
+
+                    td.appendChild(input); // Add the input to the cell.
+                    tr.appendChild(td);   // Add the cell to the row.
+                }
+
+                tbl.appendChild(tr); // Add the row to the table.
+            }
+            return tbl;
+        }
+
+    </script>
+</body>
+
+</html>
