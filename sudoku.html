@@ -75,17 +75,47 @@
         }
 
         // Get cell value function
-        function get_value(i, j){
+        function get_value(i, j) {
             let inputElement = document.getElementById(`input-${i}-${j}`);
-            if (inputElement) {
-                return inputElement.value;
+            if (inputElement && inputElement.value !== "") {
+                return parseInt(inputElement.value);  // Convert value to integer if not empty
             }
-            return null;
+            return null;  // Return null if the cell is empty
         };
 
         //console.log("Value at (0, 0):", get_value(0, 0));
         //console.log("Value at (1, 1):", get_value(1, 1));
 
+        let rows = new Array(L);
+        let cols = new Array(L);
+        let squares = new Array(N * N);
+
+        // Initialize sets for rows, columns, and squares
+        for (let i = 0; i < L; i++) {
+            rows[i] = new Set();
+            cols[i] = new Set();
+        }
+        for (let i = 0; i < N * N; i++) {
+            squares[i] = new Set();
+        }
+        
+        for (let i = 0; i < L; i++) {
+            for (let j = 0; j < L; j++) {
+                let value = get_value(i, j);
+                if (value !== null) {
+                    rows[i].add(value);  // Add value to the row set
+                    cols[j].add(value);  // Add value to the column set
+
+                    // Calculate the square index for the sub-grid
+                    let squareIndex = Math.floor(i / N) * N + Math.floor(j / N);
+                    squares[squareIndex].add(value); // Add value to the corresponding square set
+                }
+            }
+        }
+
+        console.log("Row Sets:", rows);
+        console.log("Column Sets:", cols);
+        console.log("Square Sets:", squares);
 
 
     </script>
