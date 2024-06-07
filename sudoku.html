@@ -7,6 +7,8 @@
 <body style="display: flex; justify-content: center; align-items: center; height: 80vh;">
 
     <div id="grid"> </div>
+    &nbsp;&nbsp; <!-- space -->
+    <button onclick="check()" style="width: 60px; height: 40px">check</button>
 
     <script>
         /*let matrix = [
@@ -131,28 +133,64 @@
                 inputElement.addEventListener('input', function () {
                     let newValue = parseInt(inputElement.value);
 
-                    // If the value is a number and not already in the set, update the sets
                     if (!isNaN(newValue)) {
-                        // Remove the previous value if there's one
                         let previousValue = get_value(i, j);
                         if (previousValue !== null) {
                             remove_from_sets(i, j, previousValue);
                         }
-
-                        // Add the new value to the sets
                         update_sets(i, j, newValue);
-                    } else {
-                        // If the input is empty, remove the value from the sets
+                    }
+                    else {
                         let previousValue = get_value(i, j);
                         if (previousValue !== null) {
                             remove_from_sets(i, j, previousValue);
                         }
                     }
-                    console.log("Row Sets:", rows);
-                    console.log("Column Sets:", cols);
-                    console.log("Square Sets:", squares);
+                    //console.log("Row Sets:", rows);
+                    //console.log("Column Sets:", cols);
+                    //console.log("Square Sets:", squares);
                 });
             }
+        }
+
+        function check() {
+            // Create the correct set of numbers (1 to L)
+            var correctSet = new Set();
+            for (var i = 1; i <= L; i++) {
+                correctSet.add(i);
+            }
+
+            // Helper function to check if a set contains all the correct numbers
+            function is_valid(set) {
+                if (set.size !== L) {
+                    return false;
+                }
+
+                var setArray = Array.from(set);
+                for (var i = 0; i < setArray.length; i++) {
+                    if (!correctSet.has(setArray[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Check rows, columns, and squares
+            for (var i = 0; i < L; i++) {
+                if (!is_valid(rows[i]) || !is_valid(cols[i])) {
+                    alert("Sudoku is incorrect!");
+                    return;
+                }
+            }
+
+            for (var i = 0; i < N * N; i++) {
+                if (!is_valid(squares[i])) {
+                    alert("Sudoku is incorrect!");
+                    return;
+                }
+            }
+
+            alert("Sudoku is correct!");
         }
 
     </script>
