@@ -9,9 +9,10 @@
     <div id="grid"> </div>
     &nbsp;&nbsp; <!-- space -->
     <button onclick="check()" style="width: 60px; height: 40px">check</button>
+    <button onclick="solve()" style="width: 60px; height: 40px">solve</button>
 
     <script>
-        /*let matrix = [
+        let matrix = [
             [0, 0, 0, 3, 5, 0, 2, 0, 0],
             [7, 0, 0, 0, 0, 4, 0, 0, 0],
             [2, 5, 9, 0, 8, 7, 0, 0, 0],
@@ -21,12 +22,12 @@
             [0, 0, 0, 7, 6, 0, 3, 5, 2],
             [0, 0, 0, 8, 0, 0, 0, 0, 1],
             [0, 0, 1, 0, 4, 2, 0, 0, 0],
-        ];*/
+        ];
 
-        let matrix = [[1, 0, 3, 0],
+        /*let matrix = [[1, 0, 3, 0],
         [2, 0, 0, 0],
         [0, 0, 0, 4],
-        [0, 1, 0, 0]];
+        [0, 1, 0, 0]];*/
 
         let L = matrix.length; // Total number of rows/columns.
         let N = Math.sqrt(L);  // Size of each sub-grid (e.g., 3 for 9x9 Sudoku).
@@ -191,6 +192,74 @@
             }
 
             alert("Sudoku is correct!");
+        }
+
+        function updateBoard(i, j, value) {
+            let inputElement = document.getElementById(`input-${i}-${j}`);
+            inputElement.value = value;
+        }
+
+        // Solve function with backtracking
+        function solve() {
+            if (backtrack(0, 0)) {
+                alert("Sudoku solved!");
+                for (let i = 0; i < L; i++) {
+                    for (let j = 0; j < L; j++) {
+                        updateBoard(i, j, matrix[i][j]);
+                    }
+                }
+            } else {
+                alert("No solution found.");
+            }
+        }
+
+        function backtrack(i, j) {
+            if (i === L) return true; // solution found
+
+            if (j === L) return backtrack(i + 1, 0);  // Move to the next row
+
+            if (matrix[i][j] !== 0) return backtrack(i, j + 1); // Skip pre-filled cells
+        
+            for (let num = 1; num <= L; num++) {
+                // Try possible values for the current cell
+                if (is_valid(i, j, num)) {
+                    matrix[i][j] = num;
+                    if (backtrack(i, j + 1)) {
+                        return true;
+                    }
+                    matrix[i][j] = 0;
+                }
+            }
+            return false; 
+        }
+
+        function is_valid(i, j, num) {
+            // Check row
+            for (let col = 0; col < L; col++) {
+                if (matrix[i][col] === num) {
+                    return false;
+                }
+            }
+
+            // Check column
+            for (let row = 0; row < L; row++) {
+                if (matrix[row][j] === num) {
+                    return false;
+                }
+            }
+
+            // Check sub-grid
+            let startRow = Math.floor(i / N) * N;
+            let startCol = Math.floor(j / N) * N;
+            for (let row = startRow; row < startRow + N; row++) {
+                for (let col = startCol; col < startCol + N; col++) {
+                    if (matrix[row][col] === num) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
     </script>
